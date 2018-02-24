@@ -1,10 +1,12 @@
 package main
 
 import (
-	"os"
-	"./execute"
+	"./parser"
+	"fmt"
 )
 
 func main() {
-	execute.ExecuteFromCommandLine(os.Args[1:])
+	//execute.ExecuteFromCommandLine(os.Args[1:])
+	class := parser.Class{}
+	fmt.Println(class)
 }

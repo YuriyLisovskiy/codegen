@@ -30,9 +30,9 @@ type Constructor struct {
 }
 
 type Class struct {
-	Fields       []Field
-	Methods      []Function
-	Constructors []Constructor
-	Classes      []Class
+	Name         string        `xml:"name"`
+	Fields       []Field       `xml:"fields"`
+	Methods      []Function    `xml:"methods"`
+	Constructors []Constructor `xml:"constructors"`
+	Classes      []Class       `xml:"classes"`
 }
-
