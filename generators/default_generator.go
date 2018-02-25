@@ -2,8 +2,9 @@ package generators
 
 import (
 	"errors"
-	"github.com/YuriyLisovskiy/codegen/parser"
+//	"github.com/YuriyLisovskiy/codegen/parser"
 	"strings"
+	"../parser"
 )
 
 type Generator interface {
@@ -32,6 +33,8 @@ func GetGenerator(name string) (Generator, error) {
 		return &JavaGenerator{}, nil
 	case "go":
 		return &GoGenerator{}, nil
+	case "cpp":
+		return &CppGenerator{}, nil
 	}
 	return nil, errors.New("this generator doesn't exist")
 }

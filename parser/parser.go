@@ -51,7 +51,7 @@ type Class struct {
 	Constructors []Constructor `xml:"constructors>constructor"`
 	Classes      []Class       `xml:"classes>class"`
 	Parents      []Parent      `xml:"parents>parent"`
-	Access       []string      `xml:"access"`
+	Access       string        `xml:"access"`
 }
 
 type Xml struct {

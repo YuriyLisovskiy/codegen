@@ -2,8 +2,9 @@ package generators
 
 import (
 	"fmt"
-	"github.com/YuriyLisovskiy/codegen/parser"
+	"../parser"
 	"strings"
+//	"github.com/YuriyLisovskiy/codegen/parser"
 )
 
 var (

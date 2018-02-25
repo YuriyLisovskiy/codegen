@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/YuriyLisovskiy/codegen/generators"
-	"github.com/YuriyLisovskiy/codegen/parser"
+//	"github.com/YuriyLisovskiy/codegen/generators"
+//	"github.com/YuriyLisovskiy/codegen/parser"
+	"./parser"
+	"./generators"
 )
 
 var (
