@@ -13,6 +13,7 @@ type Field struct {
 	Pointer bool   `xml:"pointer"`
 	Default string `xml:"default"`
 	Access  string `xml:"access"`
+	Static  bool   `xml:"static"`
 }
 
 type Parameter struct {
@@ -28,6 +29,7 @@ type Method struct {
 	Return     string      `xml:"return"`
 	Access     string      `xml:"access"`
 	Const      bool        `xml:"const"`
+	Static     bool        `xml:"static"`
 	Parameters []Parameter `xml:"parameters>parameter"`
 }
 
@@ -49,6 +51,7 @@ type Class struct {
 	Constructors []Constructor `xml:"constructors>constructor"`
 	Classes      []Class       `xml:"classes>class"`
 	Parents      []Parent      `xml:"parents>parent"`
+	Access       []string      `xml:"access"`
 }
 
 type Xml struct {
