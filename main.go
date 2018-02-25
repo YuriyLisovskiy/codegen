@@ -7,7 +7,6 @@ import (
 )
 
 var (
-//	lang  = "js_es6"
 	lang  = "cpp"
 	class = parser.Class{
 		Name: "Apple",

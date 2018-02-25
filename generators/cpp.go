@@ -79,11 +79,6 @@ func (CppGenerator) generateMethod(method parser.Method) string {
 			result += ", "
 		}
 	}
-//	result += ")\n{\n"
-//	if method.Return != "" {
-//		result += javaIndent + "return" + getReturnVal(method.Return) + ";"
-//	}
-//	result += "\n}"
 	result += ");"
 	return result
 }
@@ -100,12 +95,12 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 
 	for _, method := range class.Methods {
 		if access == strings.ToLower(method.Access) {
-			result += "\n" + shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n"
+			result += shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n"
 		}
 	}
 	for _, class := range class.Classes {
 		if access == strings.ToLower(class.Access) {
-			result += "\n" + shiftCode(gen.generateClass(class), 1, cppIndent) + "\n"
+			result += shiftCode(gen.generateClass(class), 1, cppIndent) + "\n"
 		}
 	}
 	if result != "" {
@@ -117,7 +112,7 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 func getReturnVal(returnType string) string {
 	result := ""
 	switch returnType {
-
+		
 	}
 	return result
 }
