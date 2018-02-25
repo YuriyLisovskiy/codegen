@@ -37,13 +37,18 @@ type Constructor struct {
 	Parameters []Parameter `xml:"parameters>parameter"`
 }
 
+type Parent struct {
+	Name string `xml:"name"`
+	Access string `xml:"access"`
+}
+
 type Class struct {
 	Name         string        `xml:"name"`
 	Fields       []Field       `xml:"fields>field"`
 	Methods      []Method      `xml:"methods>method"`
 	Constructors []Constructor `xml:"constructors>constructor"`
 	Classes      []Class       `xml:"classes>class"`
-	Parents      []string      `xml:"parents>parent"`
+	Parents      []Parent      `xml:"parents>parent"`
 }
 
 type Xml struct {
