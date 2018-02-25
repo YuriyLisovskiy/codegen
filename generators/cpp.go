@@ -21,9 +21,9 @@ func (gen CppGenerator) Generate(class parser.Class) string {
 
 func (gen CppGenerator) generateClass(class parser.Class) string {
 	parent, public, protected, private := "", "", "", ""
-//	if class.Parent != nil {
-//		parent = " : " + class.Parent.Access + " " + class.Parent.Name
-//	}
+	if class.Parent.Name != "" {
+		parent = " : " + class.Parent.Access + " " + class.Parent.Name
+	}
 	public = gen.generateSection("public", class)
 	protected = gen.generateSection("protected", class)
 	private = gen.generateSection("private", class)
