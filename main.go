@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	lang  = "js_es6"
+//	lang  = "js_es6"
+	lang  = "cpp"
 	class = parser.Class{
 		Name: "Apple",
 		Parent: parser.Parent{
@@ -38,7 +39,7 @@ var (
 		Methods: []parser.Method{
 			{
 				Access: "private",
-				Name:   "printColour",
+				Name:   "print",
 				Parameters: []parser.Parameter{
 					{
 						Pass:  "&",
@@ -77,7 +78,7 @@ var (
 						Static: true,
 						Access: "public",
 						Return: "int",
-						Name:   "getSize",
+						Name:   "transform",
 						Const:  true,
 					},
 				},

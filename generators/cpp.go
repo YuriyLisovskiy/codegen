@@ -7,14 +7,18 @@ import (
 )
 
 var (
-	cppClassFormat = "class %s%s\n{%s%s%s}"
+	cppClassFormat = "class %s%s\n{%s%s%s};"
 	cppIndent      = getIndent(true, 4)
 )
 
 type CppGenerator struct{}
 
 func (gen CppGenerator) Generate(class parser.Class) string {
-	return gen.generateClass(class)
+	result := gen.generateClass(class) + "\n"
+	result += "\n~~~\n"
+	result += "#include \"" + class.Name + ".h\"\n\n"
+	result += generateSourceFile(class, class.Name) + "\n"
+	return result
 }
 
 func (gen CppGenerator) generateClass(class parser.Class) string {
@@ -75,11 +79,12 @@ func (CppGenerator) generateMethod(method parser.Method) string {
 			result += ", "
 		}
 	}
-	result += ")\n{\n"
-	if method.Return != "" {
-		result += javaIndent + "return" + getReturnVal(method.Return) + ";"
-	}
-	result += "\n}"
+//	result += ")\n{\n"
+//	if method.Return != "" {
+//		result += javaIndent + "return" + getReturnVal(method.Return) + ";"
+//	}
+//	result += "\n}"
+	result += ");"
 	return result
 }
 
@@ -113,6 +118,37 @@ func getReturnVal(returnType string) string {
 	result := ""
 	switch returnType {
 
+	}
+	return result
+}
+
+func generateSourceFile(class parser.Class, access string) string {
+	result := ""
+	for _, method := range class.Methods {
+		switch method.Return {
+		case "":
+			result += "void "
+		default:
+			result += method.Return + " "
+		}
+		result += access + "::" + method.Name + "("
+		for i, parameter := range method.Parameters {
+			if parameter.Const {
+				result += "const "
+			}
+			result += parameter.Type + parameter.Pass + " " + parameter.Name
+			if i+1 < len(method.Parameters) {
+				result += ", "
+			}
+		}
+		result += ")\n{\n"
+		if method.Return != "" {
+			result += javaIndent + "return" + getReturnVal(method.Return) + ";"
+		}
+		result += "\n}\n"
+	}
+	for _, cl := range class.Classes {
+		result += generateSourceFile(cl, class.Name + "::" + cl.Name)
 	}
 	return result
 }
