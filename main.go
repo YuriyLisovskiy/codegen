@@ -9,9 +9,13 @@ import (
 )
 
 var (
-	lang  = "go"
+	lang  = "cpp"
 	class = parser.Class{
 		Name: "Apple",
+		Parent: parser.Parent{
+			Name: "Fruit",
+			Access: "public",
+		},
 		Fields: []parser.Field{
 			{
 				Access:  "public",
@@ -32,6 +36,7 @@ var (
 				Name:   "printColour",
 				Parameters: []parser.Parameter{
 					{
+						Pass:  "&",
 						Name:  "colour",
 						Type:  "string",
 						Const: true,
@@ -39,19 +44,35 @@ var (
 				},
 			},
 			{
-				Access: "private",
+				Access: "protected",
 				Return: "int",
 				Name:   "getSize",
+			},
+			{
+				Access: "public",
+				Return: "string",
+				Name:   "getColor",
+				Const:  true,
 			},
 		},
 		Classes: []parser.Class{
 			{
+				Access: "private",
 				Name: "Seed",
 				Fields: []parser.Field{
 					{
 						Access: "public",
 						Type:   "int",
 						Name:   "size",
+					},
+				},
+				Methods: []parser.Method{
+					{
+						Static: true,
+						Access: "public",
+						Return: "int",
+						Name:   "getSize",
+						Const:  true,
 					},
 				},
 			},

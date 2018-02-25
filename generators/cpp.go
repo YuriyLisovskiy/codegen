@@ -20,23 +20,17 @@ func (gen CppGenerator) Generate(class parser.Class) string {
 }
 
 func (gen CppGenerator) generateClass(class parser.Class) string {
-	parents, public, protected, private := "", "", "", ""
-	for i, parent := range class.Parents {
-		parents += parent.Access + " " + parent.Name
-		if i + 1 < len(class.Parents) {
-			parents += ", "
-		}
-	}
-	if parents != "" {
-		parents = " : " + parents
-	}
+	parent, public, protected, private := "", "", "", ""
+//	if class.Parent != nil {
+//		parent = " : " + class.Parent.Access + " " + class.Parent.Name
+//	}
 	public = gen.generateSection("public", class)
 	protected = gen.generateSection("protected", class)
 	private = gen.generateSection("private", class)
 	result := fmt.Sprintf(
 		cppClassFormat,
 		class.Name,
-		parents,
+		parent,
 		public,
 		protected,
 		private,
@@ -63,6 +57,9 @@ func (CppGenerator) generateField(field parser.Field) string {
 
 func (CppGenerator) generateMethod(method parser.Method) string {
 	result := ""
+	if method.Static {
+		result += "static "
+	}
 	switch method.Return {
 	case "":
 		result += "void "
@@ -76,15 +73,15 @@ func (CppGenerator) generateMethod(method parser.Method) string {
 			result += "const "
 		}
 		result += parameter.Type + parameter.Pass + " " + parameter.Name
-		if i+1 < len(method.Parameters) {
+		if i + 1 < len(method.Parameters) {
 			result += ", "
 		}
 	}
-	result += ")\n{"
+	result += ")\n{\n"
 	if method.Return != "" {
-		result += "\n" + javaIndent + "return " + method.Return + ";\n"
+		result += javaIndent + "return" + getReturnVal(method.Return) + ";"
 	}
-	result += "}"
+	result += "\n}"
 	return result
 }
 
@@ -92,7 +89,7 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 	result := ""
 	for _, field := range class.Fields {
 		if access == strings.ToLower(field.Access) {
-			result += shiftCode(gen.generateField(field), 1, cppIndent) + "\n"
+			result += gen.generateField(field) + "\n"
 		}
 	}
 	
@@ -100,16 +97,24 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 	
 	for _, method := range class.Methods {
 		if access == strings.ToLower(method.Access) {
-			result += shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n\n"
+			result += "\n" + shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n"
 		}
 	}
 	for _, class := range class.Classes {
 		if access == strings.ToLower(class.Access) {
-			result += shiftCode(gen.generateClass(class), 1, cppIndent) + "\n\n"
+			result += "\n" + shiftCode(gen.generateClass(class), 1, cppIndent) + "\n"
 		}
 	}
 	if result != "" {
-		result = access + ":\n" + result + "\n"
+		result = "\n" + access + ":\n" + result
+	}
+	return result
+}
+
+func getReturnVal(returnType string) string {
+	result := ""
+	switch returnType {
+	
 	}
 	return result
 }

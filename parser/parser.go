@@ -50,7 +50,7 @@ type Class struct {
 	Methods      []Method      `xml:"methods>method"`
 	Constructors []Constructor `xml:"constructors>constructor"`
 	Classes      []Class       `xml:"classes>class"`
-	Parents      []Parent      `xml:"parents>parent"`
+	Parent       Parent        `xml:"parent"`
 	Access       string        `xml:"access"`
 }
 
