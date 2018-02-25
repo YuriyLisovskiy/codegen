@@ -1,17 +1,18 @@
 package parser
 
 import (
-	"net/http"
-	"io/ioutil"
 	"encoding/xml"
+	"io/ioutil"
+	"net/http"
 )
 
-type Variable struct {
+type Field struct {
 	Name    string `xml:"name"`
 	Type    string `xml:"type"`
 	Const   bool   `xml:"const"`
 	Pointer bool   `xml:"pointer"`
 	Default string `xml:"default"`
+	Access  string `xml:"access"`
 }
 
 type Parameter struct {
@@ -22,9 +23,10 @@ type Parameter struct {
 	Default string `xml:"default"`
 }
 
-type Function struct {
+type Method struct {
 	Name       string      `xml:"name"`
 	Return     string      `xml:"return"`
+	Access     string      `xml:"access"`
 	Const      bool        `xml:"const"`
 	Parameters []Parameter `xml:"parameters>parameter"`
 }
@@ -37,17 +39,17 @@ type Constructor struct {
 
 type Class struct {
 	Name         string        `xml:"name"`
-	Fields       []Variable    `xml:"fields>field"`
-	Methods      []Function    `xml:"methods>method"`
+	Fields       []Field       `xml:"fields>field"`
+	Methods      []Method      `xml:"methods>method"`
 	Constructors []Constructor `xml:"constructors>constructor"`
 	Classes      []Class       `xml:"classes>class"`
 	Parents      []string      `xml:"parents>parent"`
 }
 
 type Xml struct {
-	Classes []Class `xml:"classes>class"`
-	Functions []Function `xml:"functions>function"`
-	Variables []Variable `xml:"variables>variable"`
+	Classes   []Class  `xml:"classes>class"`
+	Functions []Method `xml:"functions>function"`
+	Variables []Field  `xml:"variables>variable"`
 }
 
 func Read(name string) ([]byte, error) {
