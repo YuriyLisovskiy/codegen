@@ -1,9 +1,9 @@
 package parser
 
 import (
-	"encoding/xml"
+	"net/http"
 	"io/ioutil"
-	"fmt"
+	"encoding/xml"
 )
 
 type Variable struct {
@@ -50,15 +50,31 @@ type Xml struct {
 	Variables []Variable `xml:"variables>variable"`
 }
 
-func read(name string) []byte {
-	xmlFile, errors := ioutil.ReadFile(name)
-	if errors != nil {
-		fmt.Println(errors)
+func Read(name string) ([]byte, error) {
+	xmlFile, err := ioutil.ReadFile(name)
+	if err != nil {
+		return []byte(""), err
 	}
-	return xmlFile
+	return xmlFile, nil
 }
 
-func parse(file []byte) Xml {
+func Download(url string) ([]byte, error) {
+	response, err := http.Get(url)
+	result := []byte("")
+	if err != nil {
+		return result, err
+	}
+	if response.StatusCode == http.StatusOK {
+		bodyBytes, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			return result, err
+		}
+		result = bodyBytes
+	}
+	return result, nil
+}
+
+func Parse(file []byte) Xml {
 	var obj Xml
 	xml.Unmarshal(file, &obj)
 	return obj
