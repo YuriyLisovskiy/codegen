@@ -1,19 +1,17 @@
 package main
 
 import (
-	"fmt"
-//	"github.com/YuriyLisovskiy/codegen/generators"
-//	"github.com/YuriyLisovskiy/codegen/parser"
-	"./parser"
 	"./generators"
+	"./parser"
+	"fmt"
 )
 
 var (
-	lang  = "cpp"
+	lang  = "js_es6"
 	class = parser.Class{
 		Name: "Apple",
 		Parent: parser.Parent{
-			Name: "Fruit",
+			Name:   "Fruit",
 			Access: "public",
 		},
 		Fields: []parser.Field{
@@ -24,10 +22,17 @@ var (
 				Default: `"red"`,
 			},
 			{
+				Access:  "public",
+				Type:    "string",
+				Static:  true,
+				Name:    "sort",
+				Default: `"Golden"`,
+			},
+			{
 				Access:  "private",
 				Type:    "int",
 				Name:    "size",
-				Default: `1`,
+				Default: "1",
 			},
 		},
 		Methods: []parser.Method{
@@ -46,6 +51,7 @@ var (
 			{
 				Access: "protected",
 				Return: "int",
+				Static: true,
 				Name:   "getSize",
 			},
 			{
@@ -58,7 +64,7 @@ var (
 		Classes: []parser.Class{
 			{
 				Access: "private",
-				Name: "Seed",
+				Name:   "Seed",
 				Fields: []parser.Field{
 					{
 						Access: "public",

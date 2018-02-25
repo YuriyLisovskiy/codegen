@@ -1,13 +1,12 @@
 package generators
 
 import (
-	"fmt"
-//	"github.com/YuriyLisovskiy/codegen/parser"
 	"../parser"
+	"fmt"
 )
 
 var (
-	javaClassFormat = "class %s {%s%s%s}"
+	javaClassFormat = "class %s %s{%s%s%s}"
 	javaIndent      = getIndent(true, 4)
 )
 
@@ -21,7 +20,11 @@ func (gen JavaGenerator) Generate(class parser.Class) string {
 }
 
 func (gen JavaGenerator) generateClass(class parser.Class) string {
-	fields, methods, classes := "", "", ""
+	fields, inherits, methods, classes := "", "", "", ""
+
+	if class.Parent.Name != "" {
+		inherits = "extends " + class.Parent.Name + " "
+	}
 
 	for _, field := range class.Fields {
 		fields += gen.generateField(field) + "\n"
@@ -45,6 +48,7 @@ func (gen JavaGenerator) generateClass(class parser.Class) string {
 	result := fmt.Sprintf(
 		javaClassFormat,
 		class.Name,
+		inherits,
 		fields,
 		methods,
 		classes,
@@ -61,6 +65,9 @@ func (JavaGenerator) generateField(field parser.Field) string {
 	}
 	if field.Const {
 		result += "const "
+	}
+	if field.Static {
+		result += "static "
 	}
 	switch field.Type {
 	case "string":
@@ -84,6 +91,9 @@ func (JavaGenerator) generateMethod(method parser.Method) string {
 		result += "private "
 	} else {
 		result += method.Access + " "
+	}
+	if method.Static {
+		result += "static "
 	}
 	if method.Return == "string" {
 		method.Return = "String"

@@ -40,7 +40,7 @@ type Constructor struct {
 }
 
 type Parent struct {
-	Name string `xml:"name"`
+	Name   string `xml:"name"`
 	Access string `xml:"access"`
 }
 

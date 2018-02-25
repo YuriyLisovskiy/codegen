@@ -1,9 +1,8 @@
 package generators
 
 import (
-	"fmt"
-	//	"github.com/YuriyLisovskiy/codegen/parser"
 	"../parser"
+	"fmt"
 	"strings"
 )
 
@@ -13,7 +12,6 @@ var (
 )
 
 type CppGenerator struct{}
-
 
 func (gen CppGenerator) Generate(class parser.Class) string {
 	return gen.generateClass(class)
@@ -73,7 +71,7 @@ func (CppGenerator) generateMethod(method parser.Method) string {
 			result += "const "
 		}
 		result += parameter.Type + parameter.Pass + " " + parameter.Name
-		if i + 1 < len(method.Parameters) {
+		if i+1 < len(method.Parameters) {
 			result += ", "
 		}
 	}
@@ -92,9 +90,9 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 			result += gen.generateField(field) + "\n"
 		}
 	}
-	
+
 	// TODO: generate constructors
-	
+
 	for _, method := range class.Methods {
 		if access == strings.ToLower(method.Access) {
 			result += "\n" + shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n"
@@ -114,7 +112,7 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 func getReturnVal(returnType string) string {
 	result := ""
 	switch returnType {
-	
+
 	}
 	return result
 }

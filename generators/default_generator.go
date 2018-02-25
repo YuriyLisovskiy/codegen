@@ -1,10 +1,9 @@
 package generators
 
 import (
-	"errors"
-//	"github.com/YuriyLisovskiy/codegen/parser"
-	"strings"
 	"../parser"
+	"errors"
+	"strings"
 )
 
 type Generator interface {
@@ -33,8 +32,14 @@ func GetGenerator(name string) (Generator, error) {
 		return &JavaGenerator{}, nil
 	case "go":
 		return &GoGenerator{}, nil
+	case "ruby":
+		return &RubyGenerator{}, nil
 	case "cpp":
 		return &CppGenerator{}, nil
+	case "python":
+		return &PythonGenerator{}, nil
+	case "js_es6":
+		return &ES6Generator{}, nil
 	}
 	return nil, errors.New("this generator doesn't exist")
 }
