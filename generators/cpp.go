@@ -16,7 +16,7 @@ type CppGenerator struct{}
 func (gen CppGenerator) Generate(class parser.Class) string {
 	result := "#include \"" + class.Parent.Name + ".h\"\n\nusing namespace std;\n\n"
 	result += gen.generateClass(class) + "\n"
-	result += "\n~~~\n"
+	result += "\n// ~~~\n"
 	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
 	result += generateSourceFile(class, class.Name) + "\n"
 	return result
@@ -122,16 +122,6 @@ func getReturnVal(returnType string) string {
 		result = "0.0"
 	} else {
 		switch returnType {
-//		case "int":
-//		case "unsigned int":
-//		case "signed int":
-//		case "short int":
-//		case "unsigned short int":
-//		case "signed short int":
-//		case "long int":
-//		case "unsigned long int":
-//		case "signed long int":
-//			result = "0"
 		case "float":
 			result = "0.0f"
 		case "string":
