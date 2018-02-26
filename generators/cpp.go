@@ -14,9 +14,10 @@ var (
 type CppGenerator struct{}
 
 func (gen CppGenerator) Generate(class parser.Class) string {
-	result := gen.generateClass(class) + "\n"
+	result := "#include \"" + class.Parent.Name + ".h\"\n\nusing namespace std;\n\n"
+	result += gen.generateClass(class) + "\n"
 	result += "\n~~~\n"
-	result += "#include \"" + class.Name + ".h\"\n\n"
+	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
 	result += generateSourceFile(class, class.Name) + "\n"
 	return result
 }
@@ -111,10 +112,35 @@ func (gen CppGenerator) generateSection(access string, class parser.Class) strin
 
 func getReturnVal(returnType string) string {
 	result := ""
-	switch returnType {
-		
+	if strings.Contains(returnType, "*") {
+		result = "nullptr"
+	} else if strings.Contains(returnType, "int") {
+		result = "0"
+	} else if strings.Contains(returnType, "char") {
+		result = "''"
+	} else if strings.Contains(returnType, "double") {
+		result = "0.0"
+	} else {
+		switch returnType {
+//		case "int":
+//		case "unsigned int":
+//		case "signed int":
+//		case "short int":
+//		case "unsigned short int":
+//		case "signed short int":
+//		case "long int":
+//		case "unsigned long int":
+//		case "signed long int":
+//			result = "0"
+		case "float":
+			result = "0.0f"
+		case "string":
+			result = `""`
+		default:
+			result = ""
+		}
 	}
-	return result
+	return " " + result
 }
 
 func generateSourceFile(class parser.Class, access string) string {
