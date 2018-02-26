@@ -4,6 +4,7 @@ import (
 	"./generators"
 	"./parser"
 	"fmt"
+	"flag"
 )
 
 var (
@@ -90,8 +91,18 @@ var (
 	Parse command arguments using "flag" library
 	read more here: https://gobyexample.com/command-line-flags
 */
+
+func getArgs() (string, string, string) {
+	langPtr := flag.String("l", "", "language")
+	xmlPtr := flag.String("f", "", "file")
+	xmlUrlPtr := flag.String("u", "", "file url")
+	flag.Parse()
+	return *langPtr, *xmlPtr, *xmlUrlPtr
+}
+
 func main() {
 
+//	language, file, fileUrl := getArgs()
 	generator, err := generators.GetGenerator(lang)
 	if err != nil {
 		panic(err)
