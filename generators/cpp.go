@@ -14,7 +14,11 @@ var (
 type CppGenerator struct{}
 
 func (gen CppGenerator) Generate(class parser.Class) string {
-	result := "#include \"" + class.Parent.Name + ".h\"\n\nusing namespace std;\n\n"
+	result := ""
+	if class.Parent.Name != "" {
+		result = "#include \"" + class.Parent.Name + ".h\"\n\n"
+	}
+	result += "using namespace std;\n\n"
 	result += gen.generateClass(class) + "\n"
 	result += "\n// ~~~\n"
 	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"

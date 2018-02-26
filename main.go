@@ -101,8 +101,11 @@ func getArgs() (string, string, string, bool) {
 func parseArgs(lang, xml, url string, spaces bool) (string, []byte, error) {
 	
 	file := []byte("")
-	if lang == "" || (xml == "") {
-		return "", file, errors.New("specify language (-l) and file path (-f) (or url path (-u)) flags")
+	if lang == "" {
+		return "", file, errors.New("specify language (-l) flag")
+	}
+	if url == "" && xml == "" {
+		return "", file, errors.New("specify file path (-f) or url path (-u) flag")
 	}
 	if xml != "" && url != "" {
 		return "", file, errors.New("do not use both -f and -u flags at the same time")
