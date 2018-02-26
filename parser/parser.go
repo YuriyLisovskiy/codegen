@@ -84,8 +84,16 @@ func Download(url string) ([]byte, error) {
 	return result, nil
 }
 
+func Parse(file []byte) Class {
+	var obj Class
+	xml.Unmarshal(file, &obj)
+	return obj
+}
+
+/*
 func Parse(file []byte) Xml {
 	var obj Xml
 	xml.Unmarshal(file, &obj)
 	return obj
 }
+*/
