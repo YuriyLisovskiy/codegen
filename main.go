@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	lang  = "cpp"
+	lang  = "csharp"
 	class = parser.Class{
 		Name: "Apple",
 		Parent: parser.Parent{

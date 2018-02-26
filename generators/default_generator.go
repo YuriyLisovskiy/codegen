@@ -40,6 +40,8 @@ func GetGenerator(name string) (Generator, error) {
 		return &PythonGenerator{}, nil
 	case "js_es6":
 		return &ES6Generator{}, nil
+	case "csharp":
+		return &CSharpGenerator{}, nil
 	}
 	return nil, errors.New("this generator doesn't exist")
 }
