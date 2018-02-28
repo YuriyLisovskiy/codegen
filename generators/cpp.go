@@ -22,7 +22,7 @@ func (gen CppGenerator) Generate(pkg parser.Package) string {
 		}
 		result += "using namespace std;\n\n"
 		result += gen.generateClass(class) + "\n"
-		result += "\n// ~~~\n"
+		result += "\n// Definition\n\n"
 	//	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
 		result += generateSourceFile(class, class.Name) + "\n" + parser.DELIM_END
 	}
