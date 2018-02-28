@@ -5,66 +5,68 @@ import (
 	"./parser"
 	"flag"
 	"errors"
-	"strings"
 	"fmt"
+	"regexp"
 )
 
 var (
 	lang  = "csharp"
-	class = parser.Class{
-		Name: "Apple",
-		Parent: parser.Parent{
-			Name:   "Fruit",
-			Access: "public",
-		},
-		Fields: []parser.Field{
+	v = parser.Package{
+		Classes: []parser.Class{
 			{
-				Access:  "public",
-				Type:    "string",
-				Name:    "colour",
-				Default: `"red"`,
-			},
-			{
-				Access:  "public",
-				Type:    "string",
-				Static:  true,
-				Name:    "sort",
-				Default: `"Golden"`,
-			},
-			{
-				Access:  "private",
-				Type:    "int",
-				Name:    "size",
-				Default: "1",
-			},
-		},
-		Methods: []parser.Method{
-			{
-				Access: "private",
-				Name:   "print",
-				Parameters: []parser.Parameter{
+				Name: "Apple",
+				Parent: parser.Parent{
+					Name:   "Fruit",
+					Access: "public",
+				},
+				Fields: []parser.Field{
 					{
-						Pass:  "&",
-						Name:  "colour",
-						Type:  "string",
-						Const: true,
+						Access:  "public",
+						Type:    "string",
+						Name:    "colour",
+						Default: `"red"`,
+					},
+					{
+						Access:  "public",
+						Type:    "string",
+						Static:  true,
+						Name:    "sort",
+						Default: `"Golden"`,
+					},
+					{
+						Access:  "private",
+						Type:    "int",
+						Name:    "size",
+						Default: "1",
+					},
+				},
+				Methods: []parser.Method{
+					{
+						Access: "private",
+						Name:   "print",
+						Parameters: []parser.Parameter{
+							{
+								Pass:  "&",
+								Name:  "colour",
+								Type:  "string",
+								Const: true,
+							},
+						},
+					},
+					{
+						Access: "protected",
+						Return: "int",
+						Static: true,
+						Name:   "getSize",
+					},
+					{
+						Access: "public",
+						Return: "string",
+						Name:   "getColor",
+						Const:  true,
 					},
 				},
 			},
-			{
-				Access: "protected",
-				Return: "int",
-				Static: true,
-				Name:   "getSize",
-			},
-			{
-				Access: "public",
-				Return: "string",
-				Name:   "getColor",
-				Const:  true,
-			},
-		},
-		Classes: []parser.Class{
 			{
 				Access: "private",
 				Name:   "Seed",
@@ -122,7 +124,7 @@ func getExtension(language string) string {
 	case "ruby":
 		return ".rb"
 	case "cpp":
-		return ".cpp"
+		return ".h"
 	case "python":
 		return ".py"
 	case "js_es6":
@@ -133,12 +135,9 @@ func getExtension(language string) string {
 	return ""
 }
 
-func clearExtension(fileName string) (string, error) {
-	splitString := strings.Split(fileName, ".")
-	if len(splitString) > 0 {
-		return splitString[0], nil
-	}
-	return "", errors.New("invalid input file name '" + fileName + "'")
+func parseFileContent(fileContent string) []string {
+	r, _ := regexp.Compile(`\[~[^[~]*~]`)
+	return r.FindAllString(fileContent, -1)
 }
 
 func execute() error {
@@ -165,34 +164,38 @@ func execute() error {
 	if err != nil {
 		return nil
 	}
-	object := parser.ParseXml(byteContext)
-//	object.UseSpaces = useSpaces
+	object := parser.Parse(byteContext)
+	object.UseSpaces = useSpaces
 	fileContext := generator.Generate(object)
-	fileName, err = clearExtension(fileName)
-	if err != nil {
-		return err
+	var fileNames []string
+	for _, fn := range object.Classes {
+		fileNames = append(fileNames, fn.Name + getExtension(language))
 	}
-	err = parser.Write(fileName + getExtension(language), fileContext)
-	if err != nil {
-		return err
+	fileContents := parseFileContent(fileContext)
+	if len(fileNames) != len(fileContents) {
+		return errors.New("length of file names is not equal to length of file contents")
 	}
-	
-	if useSpaces {}
-	
+	for i := range fileNames {
+		content := fileContents[i][len(parser.DELIM_START):len(fileContents[i]) - len(parser.DELIM_END)]
+		err = parser.Write(fileNames[i], content)
+		if err != nil {
+			return err
+		}
+	}
 	fmt.Println("Generated successfully.")
 	return nil
 }
 
 func main() {
-	generator, err := generators.GetGenerator(lang)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(generator.Generate(class))
-/*
+//	generator, err := generators.GetGenerator(lang)
+//	if err != nil {
+//		panic(err)
+//	}
+//	fmt.Println(generator.Generate(object))
+
 	err := execute()
 	if err != nil {
 		panic(err)
 	}
-*/
+
 }
