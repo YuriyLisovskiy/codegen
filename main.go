@@ -98,44 +98,56 @@ func getArgs() (string, string, string, bool) {
 	return *langPtr, *xmlPtr, *xmlUrlPtr, *spacesPtr
 }
 
-func parseArgs(lang, xml, url string, spaces bool) (string, []byte, error) {
+func validateArgs(lang, file, url string) error {
 	
-	file := []byte("")
 	if lang == "" {
-		return "", file, errors.New("specify language (-l) flag")
+		return errors.New("specify language (-l) flag")
 	}
-	if url == "" && xml == "" {
-		return "", file, errors.New("specify file path (-f) or url path (-u) flag")
+	if url == "" && file == "" {
+		return errors.New("specify file path (-f) or url path (-u) flag")
 	}
-	if xml != "" && url != "" {
-		return "", file, errors.New("do not use both -f and -u flags at the same time")
+	if file != "" && url != "" {
+		return errors.New("do not use both -f and -u flags at the same time")
 	}
-	if xml != "" {
-		file, err := parser.Read(xml)
+	return nil
+}
+
+func execute() error {
+/*
+	language, fileName, url, useSpaces := getArgs()
+	err := validateArgs(language, fileName, url)
+	if err != nil {
+		return err
+	}
+	var byteContext []byte
+	if url != "" {
+		byteContext, err = parser.Download(url)
 		if err != nil {
-			return "", file, err
+			return err
 		}
-		return lang, file, nil
-	} else if url != "" {
-		file, err := parser.Download(url)
+		fileName = url
+	} else {
+		byteContext, err = parser.Read(url)
 		if err != nil {
-			return "", file, err
+			return err
 		}
-		return lang, file, nil
 	}
-	return lang, file, nil
+	generator, err := generators.GetGenerator(language)
+	if err != nil {
+		return nil
+	}
+	object := parser.ParseXml(byteContext)
+	object.UseSpaces = useSpaces
+	fileContext := generator.Generate(object)
+	parser.Write(fileName, fileContext)
+*/
+	return nil
 }
 
 func main() {
-	
-//	language, file, err := parseArgs(getArgs())
-//	if err != nil {
-//		panic(err)
-//	}
 	generator, err := generators.GetGenerator(lang)
 	if err != nil {
 		panic(err)
 	}
-//	fmt.Println(generator.Generate(parser.Parse(file)))
 	fmt.Println(generator.Generate(class))
 }

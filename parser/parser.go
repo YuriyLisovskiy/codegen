@@ -58,6 +58,7 @@ type Xml struct {
 	Classes   []Class  `xml:"classes>class"`
 	Functions []Method `xml:"functions>function"`
 	Variables []Field  `xml:"variables>variable"`
+	UseSpaces bool
 }
 
 func Read(name string) ([]byte, error) {
@@ -66,6 +67,12 @@ func Read(name string) ([]byte, error) {
 		return []byte(""), err
 	}
 	return xmlFile, nil
+}
+
+func Write(path, fileContext string) error {
+	
+	
+	return nil
 }
 
 func Download(url string) ([]byte, error) {
@@ -84,7 +91,7 @@ func Download(url string) ([]byte, error) {
 	return result, nil
 }
 
-func Parse(file []byte) Class {
+func ParseXml(file []byte) Class {
 	var obj Class
 	xml.Unmarshal(file, &obj)
 	return obj
