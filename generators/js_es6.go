@@ -14,6 +14,7 @@ var (
 type ES6Generator struct{}
 
 func (gen ES6Generator) Generate(pkg parser.Package) string {
+	es6Indent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END

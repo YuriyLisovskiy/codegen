@@ -14,6 +14,7 @@ var (
 type RubyGenerator struct{}
 
 func (gen RubyGenerator) Generate(pkg parser.Package) string {
+	rubyIndent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END

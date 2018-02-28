@@ -16,6 +16,7 @@ type JavaGenerator struct{}
 The class must be validated before using this function
 */
 func (gen JavaGenerator) Generate(pkg parser.Package) string {
+	javaIndent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END

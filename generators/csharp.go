@@ -16,6 +16,7 @@ type CSharpGenerator struct{}
 The class must be validated before using this function
 */
 func (gen CSharpGenerator) Generate(pkg parser.Package) string {
+	cSharpIndent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START + "namespace " + class.Name + "Application {\n"

@@ -14,6 +14,7 @@ var (
 type CppGenerator struct{}
 
 func (gen CppGenerator) Generate(pkg parser.Package) string {
+	cppIndent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START

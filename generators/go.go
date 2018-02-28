@@ -14,6 +14,7 @@ var (
 type GoGenerator struct{}
 
 func (gen GoGenerator) Generate(pkg parser.Package) string {
+	goIndent = getIndent(!pkg.UseSpaces, 4)
 	result := ""
 	for _, class := range pkg.Classes {
 		result += parser.DELIM_START + "package " + class.Name + "\n\n"
