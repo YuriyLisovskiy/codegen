@@ -3,9 +3,10 @@ package main
 import (
 	"./generators"
 	"./parser"
-	"fmt"
 	"flag"
 	"errors"
+	"strings"
+	"fmt"
 )
 
 var (
@@ -112,8 +113,36 @@ func validateArgs(lang, file, url string) error {
 	return nil
 }
 
+func getExtension(language string) string {
+	switch language {
+	case "java":
+		return ".java"
+	case "go":
+		return ".go"
+	case "ruby":
+		return ".rb"
+	case "cpp":
+		return ".cpp"
+	case "python":
+		return ".py"
+	case "js_es6":
+		return ".js"
+	case "csharp":
+		return ".cs"
+	}
+	return ""
+}
+
+func clearExtension(fileName string) (string, error) {
+	splitString := strings.Split(fileName, ".")
+	if len(splitString) > 0 {
+		return splitString[0], nil
+	}
+	return "", errors.New("invalid input file name '" + fileName + "'")
+}
+
 func execute() error {
-/*
+
 	language, fileName, url, useSpaces := getArgs()
 	err := validateArgs(language, fileName, url)
 	if err != nil {
@@ -127,7 +156,7 @@ func execute() error {
 		}
 		fileName = url
 	} else {
-		byteContext, err = parser.Read(url)
+		byteContext, err = parser.Read(fileName)
 		if err != nil {
 			return err
 		}
@@ -137,10 +166,20 @@ func execute() error {
 		return nil
 	}
 	object := parser.ParseXml(byteContext)
-	object.UseSpaces = useSpaces
+//	object.UseSpaces = useSpaces
 	fileContext := generator.Generate(object)
-	parser.Write(fileName, fileContext)
-*/
+	fileName, err = clearExtension(fileName)
+	if err != nil {
+		return err
+	}
+	err = parser.Write(fileName + getExtension(language), fileContext)
+	if err != nil {
+		return err
+	}
+	
+	if useSpaces {}
+	
+	fmt.Println("Generated successfully.")
 	return nil
 }
 
@@ -150,4 +189,10 @@ func main() {
 		panic(err)
 	}
 	fmt.Println(generator.Generate(class))
+/*
+	err := execute()
+	if err != nil {
+		panic(err)
+	}
+*/
 }

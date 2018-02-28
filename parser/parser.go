@@ -4,6 +4,9 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"io"
+	"strings"
 )
 
 type Field struct {
@@ -70,8 +73,15 @@ func Read(name string) ([]byte, error) {
 }
 
 func Write(path, fileContext string) error {
-	
-	
+	file, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	_, err = io.Copy(file, strings.NewReader(fileContext))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
