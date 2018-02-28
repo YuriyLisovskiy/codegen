@@ -16,7 +16,8 @@ type GoGenerator struct{}
 func (gen GoGenerator) Generate(pkg parser.Package) string {
 	result := ""
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+		result += parser.DELIM_START + "package " + class.Name + "\n\n"
+		result += gen.generateClass(class) + "\n" + parser.DELIM_END
 	}
 	return result
 }
