@@ -13,8 +13,12 @@ var (
 
 type RubyGenerator struct{}
 
-func (gen RubyGenerator) Generate(class parser.Class) string {
-	return gen.generateClass(class)
+func (gen RubyGenerator) Generate(pkg parser.Package) string {
+	result := ""
+	for _, class := range pkg.Classes {
+		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+	}
+	return result
 }
 
 func (gen RubyGenerator) generateClass(class parser.Class) string {

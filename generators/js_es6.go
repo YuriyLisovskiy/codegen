@@ -13,8 +13,12 @@ var (
 
 type ES6Generator struct{}
 
-func (gen ES6Generator) Generate(class parser.Class) string {
-	return gen.generateClass(class)
+func (gen ES6Generator) Generate(pkg parser.Package) string {
+	result := ""
+	for _, class := range pkg.Classes {
+		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+	}
+	return result
 }
 
 func (gen ES6Generator) generateClass(class parser.Class) string {

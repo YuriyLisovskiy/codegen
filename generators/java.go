@@ -15,8 +15,12 @@ type JavaGenerator struct{}
 /*
 The class must be validated before using this function
 */
-func (gen JavaGenerator) Generate(class parser.Class) string {
-	return gen.generateClass(class)
+func (gen JavaGenerator) Generate(pkg parser.Package) string {
+	result := ""
+	for _, class := range pkg.Classes {
+		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+	}
+	return result
 }
 
 func (gen JavaGenerator) generateClass(class parser.Class) string {

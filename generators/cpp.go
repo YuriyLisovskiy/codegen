@@ -13,16 +13,19 @@ var (
 
 type CppGenerator struct{}
 
-func (gen CppGenerator) Generate(class parser.Class) string {
+func (gen CppGenerator) Generate(pkg parser.Package) string {
 	result := ""
-	if class.Parent.Name != "" {
-		result = "#include \"" + class.Parent.Name + ".h\"\n\n"
+	for _, class := range pkg.Classes {
+		result += parser.DELIM_START
+		if class.Parent.Name != "" {
+			result += "#include \"" + class.Parent.Name + ".h\"\n\n"
+		}
+		result += "using namespace std;\n\n"
+		result += gen.generateClass(class) + "\n"
+		result += "\n// ~~~\n"
+	//	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
+		result += generateSourceFile(class, class.Name) + "\n" + parser.DELIM_END
 	}
-	result += "using namespace std;\n\n"
-	result += gen.generateClass(class) + "\n"
-	result += "\n// ~~~\n"
-	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
-	result += generateSourceFile(class, class.Name) + "\n"
 	return result
 }
 

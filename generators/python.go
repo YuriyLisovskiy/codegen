@@ -13,8 +13,12 @@ var (
 
 type PythonGenerator struct{}
 
-func (gen PythonGenerator) Generate(class parser.Class) string {
-	return gen.generateClass(class)
+func (gen PythonGenerator) Generate(pkg parser.Package) string {
+	result := ""
+	for _, class := range pkg.Classes {
+		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+	}
+	return result
 }
 
 func (gen PythonGenerator) generateClass(class parser.Class) string {
