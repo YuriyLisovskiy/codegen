@@ -9,6 +9,11 @@ import (
 	"strings"
 )
 
+var (
+	DELIM_START = "[~"
+	DELIM_END = "~]"
+)
+
 type Field struct {
 	Name    string `xml:"name"`
 	Type    string `xml:"type"`
@@ -57,10 +62,10 @@ type Class struct {
 	Access       string        `xml:"access"`
 }
 
-type Xml struct {
-	Classes   []Class  `xml:"classes>class"`
-	Functions []Method `xml:"functions>function"`
-	Variables []Field  `xml:"variables>variable"`
+type Package struct {
+	Classes   []Class  `xml:"class"`
+	Functions []Method `xml:"function"`
+	Variables []Field  `xml:"variable"`
 	UseSpaces bool
 }
 
@@ -107,10 +112,8 @@ func ParseXml(file []byte) Class {
 	return obj
 }
 
-/*
-func Parse(file []byte) Xml {
-	var obj Xml
+func Parse(file []byte) Package {
+	var obj Package
 	xml.Unmarshal(file, &obj)
 	return obj
 }
-*/
