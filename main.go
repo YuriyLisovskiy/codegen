@@ -102,7 +102,6 @@ func getArgs() (string, string, string, bool) {
 }
 
 func validateArgs(lang, file, url string) error {
-	
 	if lang == "" {
 		return errors.New("specify language (-l) flag")
 	}
@@ -144,7 +143,6 @@ func getFileFormat(name string) (string, error) {
 }
 
 func execute() error {
-
 	language, fileName, url, useSpaces := getArgs()
 	err := validateArgs(language, fileName, url)
 	if err != nil {
@@ -167,7 +165,6 @@ func execute() error {
 	if err != nil {
 		return nil
 	}
-	
 	fileFormat, err := getFileFormat(fileName)
 	if err != nil {
 		return err
@@ -178,6 +175,8 @@ func execute() error {
 		object = parser.ParseXml(byteContext)
 	case "json":
 		object = parser.ParseJson(byteContext)
+	case "yml":
+		object = parser.ParseYaml(byteContext)
 	default:
 		return errors.New(fmt.Sprintf("invalid format of '%s' file", fileName))
 	}
