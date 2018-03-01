@@ -6,6 +6,7 @@ import (
 	"flag"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 var (
@@ -134,6 +135,14 @@ func getExtension(language string) string {
 	return ""
 }
 
+func getFileFormat(name string) (string, error) {
+	arr := strings.Split(name, ".")
+	if len(arr) > 0 {
+		return arr[len(arr) - 1], nil
+	}
+	return "", errors.New("invalid input file")
+}
+
 func execute() error {
 
 	language, fileName, url, useSpaces := getArgs()
@@ -158,7 +167,20 @@ func execute() error {
 	if err != nil {
 		return nil
 	}
-	object := parser.Parse(byteContext)
+	
+	fileFormat, err := getFileFormat(fileName)
+	if err != nil {
+		return err
+	}
+	var object parser.Package
+	switch fileFormat {
+	case "xml":
+		object = parser.ParseXml(byteContext)
+	case "json":
+		object = parser.ParseJson(byteContext)
+	default:
+		return errors.New(fmt.Sprintf("invalid format of '%s' file", fileName))
+	}
 	object.UseSpaces = useSpaces
 	fileContextMap := generator.Generate(object)
 	ext := getExtension(language)
