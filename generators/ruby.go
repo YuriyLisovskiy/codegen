@@ -13,11 +13,12 @@ var (
 
 type RubyGenerator struct{}
 
-func (gen RubyGenerator) Generate(pkg parser.Package) string {
+func (gen RubyGenerator) Generate(pkg parser.Package) map[string]string {
 	rubyIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+		code := gen.generateClass(class) + "\n"
+		result[class.Name] = code
 	}
 	return result
 }

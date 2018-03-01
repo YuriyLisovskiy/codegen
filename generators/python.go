@@ -13,11 +13,12 @@ var (
 
 type PythonGenerator struct{}
 
-func (gen PythonGenerator) Generate(pkg parser.Package) string {
+func (gen PythonGenerator) Generate(pkg parser.Package) map[string]string {
 	pythonIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+		code := gen.generateClass(class)
+		result[class.Name] = code
 	}
 	return result
 }

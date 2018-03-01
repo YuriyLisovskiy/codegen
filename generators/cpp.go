@@ -13,19 +13,20 @@ var (
 
 type CppGenerator struct{}
 
-func (gen CppGenerator) Generate(pkg parser.Package) string {
+func (gen CppGenerator) Generate(pkg parser.Package) map[string]string {
 	cppIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START
+		code := ""
 		if class.Parent.Name != "" {
-			result += "#include \"" + class.Parent.Name + ".h\"\n\n"
+			code += "#include \"" + class.Parent.Name + ".h\"\n\n"
 		}
-		result += "using namespace std;\n\n"
-		result += gen.generateClass(class) + "\n"
-		result += "\n// Definition\n\n"
-	//	result += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
-		result += generateSourceFile(class, class.Name) + "\n" + parser.DELIM_END
+		code += "using namespace std;\n\n"
+		code += gen.generateClass(class) + "\n"
+		code += "\n// Definition\n\n"
+	//	code += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
+		code += generateSourceFile(class, class.Name)
+		result[class.Name] = code
 	}
 	return result
 }
@@ -50,7 +51,7 @@ func (gen CppGenerator) generateClass(class parser.Class) string {
 }
 
 func (CppGenerator) generateField(field parser.Field) string {
-	result := javaIndent
+	result := cppIndent
 	if field.Static {
 		result += "static "
 	}
@@ -162,7 +163,7 @@ func generateSourceFile(class parser.Class, access string) string {
 		}
 		result += ")\n{\n"
 		if method.Return != "" {
-			result += javaIndent + "return" + getReturnVal(method.Return) + ";"
+			result += cppIndent + "return" + getReturnVal(method.Return) + ";"
 		}
 		result += "\n}\n"
 	}

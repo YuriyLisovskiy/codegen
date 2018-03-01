@@ -6,7 +6,6 @@ import (
 	"flag"
 	"errors"
 	"fmt"
-	"regexp"
 )
 
 var (
@@ -129,15 +128,10 @@ func getExtension(language string) string {
 		return ".py"
 	case "js_es6":
 		return ".js"
-	case "csharp":
+	case "cs":
 		return ".cs"
 	}
 	return ""
-}
-
-func parseFileContent(fileContent string) []string {
-	r, _ := regexp.Compile(`\[~[^[~]*~]`)
-	return r.FindAllString(fileContent, -1)
 }
 
 func execute() error {
@@ -166,18 +160,10 @@ func execute() error {
 	}
 	object := parser.Parse(byteContext)
 	object.UseSpaces = useSpaces
-	fileContext := generator.Generate(object)
-	var fileNames []string
-	for _, fn := range object.Classes {
-		fileNames = append(fileNames, fn.Name + getExtension(language))
-	}
-	fileContents := parseFileContent(fileContext)
-	if len(fileNames) != len(fileContents) {
-		return errors.New("length of file names is not equal to length of file contents")
-	}
-	for i := range fileNames {
-		content := fileContents[i][len(parser.DELIM_START):len(fileContents[i]) - len(parser.DELIM_END)]
-		err = parser.Write(fileNames[i], content)
+	fileContextMap := generator.Generate(object)
+	ext := getExtension(language)
+	for key, val := range fileContextMap {
+		err = parser.Write(key + ext, val)
 		if err != nil {
 			return err
 		}

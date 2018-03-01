@@ -15,13 +15,14 @@ type CSharpGenerator struct{}
 /*
 The class must be validated before using this function
 */
-func (gen CSharpGenerator) Generate(pkg parser.Package) string {
+func (gen CSharpGenerator) Generate(pkg parser.Package) map[string]string {
 	cSharpIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + "namespace " + class.Name + "Application {\n"
-		result += shiftCode(gen.generateClass(class), 1, cSharpIndent)
-		result += "\n}" + parser.DELIM_END
+		code := "namespace " + class.Name + "Application {\n"
+		code += shiftCode(gen.generateClass(class), 1, cSharpIndent)
+		code += "\n}\n"
+		result[class.Name] = code
 	}
 	return result
 }

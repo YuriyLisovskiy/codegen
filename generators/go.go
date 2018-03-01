@@ -13,12 +13,13 @@ var (
 
 type GoGenerator struct{}
 
-func (gen GoGenerator) Generate(pkg parser.Package) string {
+func (gen GoGenerator) Generate(pkg parser.Package) map[string]string {
 	goIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + "package " + class.Name + "\n\n"
-		result += gen.generateClass(class) + "\n" + parser.DELIM_END
+		code := "package " + class.Name + "\n\n"
+		code += gen.generateClass(class)
+		result[class.Name] = code
 	}
 	return result
 }

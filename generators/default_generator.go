@@ -7,7 +7,7 @@ import (
 )
 
 type Generator interface {
-	Generate(class parser.Package) string
+	Generate(class parser.Package) map[string]string
 	generateField(field parser.Field) string
 	generateMethod(method parser.Method) string
 	generateClass(class parser.Class) string

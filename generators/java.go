@@ -15,11 +15,12 @@ type JavaGenerator struct{}
 /*
 The class must be validated before using this function
 */
-func (gen JavaGenerator) Generate(pkg parser.Package) string {
+func (gen JavaGenerator) Generate(pkg parser.Package) map[string]string {
 	javaIndent = getIndent(!pkg.UseSpaces, 4)
-	result := ""
+	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		result += parser.DELIM_START + gen.generateClass(class) + "\n" + parser.DELIM_END
+		code := gen.generateClass(class) + "\n"
+		result[class.Name] = code
 	}
 	return result
 }
