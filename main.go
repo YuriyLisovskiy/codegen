@@ -1,12 +1,10 @@
 package main
 
 import (
-	"./generators"
-	"./parser"
-	"flag"
-	"errors"
 	"fmt"
-	"strings"
+	"errors"
+	"./parser"
+	"./generators"
 )
 
 var (
@@ -92,59 +90,9 @@ var (
 )
 
 
-func getArgs() (string, string, string, bool) {
-	langPtr := flag.String("l", "", "language")
-	xmlPtr := flag.String("f", "", "file")
-	xmlUrlPtr := flag.String("u", "", "file url")
-	spacesPtr := flag.Bool("s", false, "use spaces")
-	flag.Parse()
-	return *langPtr, *xmlPtr, *xmlUrlPtr, *spacesPtr
-}
-
-func validateArgs(lang, file, url string) error {
-	if lang == "" {
-		return errors.New("specify language (-l) flag")
-	}
-	if url == "" && file == "" {
-		return errors.New("specify file path (-f) or url path (-u) flag")
-	}
-	if file != "" && url != "" {
-		return errors.New("do not use both -f and -u flags at the same time")
-	}
-	return nil
-}
-
-func getExtension(language string) string {
-	switch language {
-	case "java":
-		return ".java"
-	case "go":
-		return ".go"
-	case "ruby":
-		return ".rb"
-	case "cpp":
-		return ".h"
-	case "python":
-		return ".py"
-	case "js_es6":
-		return ".js"
-	case "cs":
-		return ".cs"
-	}
-	return ""
-}
-
-func getFileFormat(name string) (string, error) {
-	arr := strings.Split(name, ".")
-	if len(arr) > 0 {
-		return arr[len(arr) - 1], nil
-	}
-	return "", errors.New("invalid input file")
-}
-
 func execute() error {
-	language, fileName, url, useSpaces := getArgs()
-	err := validateArgs(language, fileName, url)
+	language, fileName, url, useSpaces := parser.GetArgs()
+	err := parser.ValidateArgs(language, fileName, url)
 	if err != nil {
 		return err
 	}
@@ -165,7 +113,7 @@ func execute() error {
 	if err != nil {
 		return nil
 	}
-	fileFormat, err := getFileFormat(fileName)
+	fileFormat, err := parser.GetFileFormat(fileName)
 	if err != nil {
 		return err
 	}
@@ -178,18 +126,22 @@ func execute() error {
 	case "yml":
 		object = parser.ParseYaml(byteContext)
 	default:
-		return errors.New(fmt.Sprintf("invalid format of '%s' file", fileName))
+		return errors.New(fmt.Sprintf("Invalid format of '%s' file.", fileName))
 	}
 	object.UseSpaces = useSpaces
 	fileContextMap := generator.Generate(object)
-	ext := getExtension(language)
+	ext := parser.GetExtension(language)
 	for key, val := range fileContextMap {
 		err = parser.Write(key + ext, val)
 		if err != nil {
 			return err
 		}
 	}
-	fmt.Println("Generated successfully.")
+	if len(object.Classes) == 0 && len(object.Classes) == 0 && len(object.Classes) == 0 {
+		fmt.Println(fmt.Sprintf("There is nothing to generate, file '%s' is empty or incorrect.", fileName))
+	} else {
+		fmt.Println("Generated successfully.")
+	}
 	return nil
 }
 
