@@ -9,10 +9,6 @@ import (
 	"strings"
 )
 
-var (
-	DELIM_START = "[~"
-	DELIM_END = "~]"
-)
 
 type Field struct {
 	Name    string `xml:"name"`
