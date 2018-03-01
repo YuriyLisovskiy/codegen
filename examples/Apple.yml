@@ -1,0 +1,66 @@
+classes: [{
+    name: Apple,
+    parent:
+    {
+      name: Fruit,
+      access: public
+    },
+    fields:
+    [
+      {
+        access: private,
+        type: int,
+        name: value,
+        default: 18
+      },
+      {
+        access: protected,
+        type: char,
+        name: symbol,
+        static: true
+      }
+    ],
+    methods:
+    [
+      {
+        access: public,
+        return: int,
+        static: true,
+        name: getSymbol,
+        const: true
+      }
+    ]
+  },
+  {
+    name: Orange,
+    parent:
+    {
+      name: SomeOtherFruit,
+      access: public
+    },
+    fields:
+    [
+      {
+        access: public,
+        type: string,
+        name: val
+      },
+      {
+        access: public,
+        type: double,
+        name: sym,
+        static: false
+      }
+    ],
+    methods:
+    [
+      {
+        access: public,
+        return: int,
+        static: true,
+        name: getSymbol,
+        const: true
+      }
+    ]
+  }
+]
