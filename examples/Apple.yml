@@ -1,66 +1,51 @@
-classes: [{
-    name: Apple,
-    parent:
-    {
-      name: Fruit,
-      access: public
-    },
-    fields:
-    [
-      {
-        access: private,
-        type: int,
-        name: value,
-        default: 18
-      },
-      {
-        access: protected,
-        type: char,
-        name: symbol,
-        static: true
-      }
-    ],
-    methods:
-    [
-      {
-        access: public,
-        return: int,
-        static: true,
-        name: getSymbol,
-        const: true
-      }
-    ]
-  },
-  {
-    name: Orange,
-    parent:
-    {
-      name: SomeOtherFruit,
-      access: public
-    },
-    fields:
-    [
-      {
-        access: public,
-        type: string,
-        name: val
-      },
-      {
-        access: public,
-        type: double,
-        name: sym,
-        static: false
-      }
-    ],
-    methods:
-    [
-      {
-        access: public,
-        return: int,
-        static: true,
-        name: getSymbol,
-        const: true
-      }
-    ]
-  }
-]
+name: main
+classes:
+- name: Fruit
+- name: Apple
+  fields:
+  - name: colour
+    type: string
+    default: '"red"'
+    access: public
+  - name: sort
+    type: string
+    default: '"Golden"'
+    access: public
+  - name: size
+    type: int
+    default: "1"
+    access: private
+    static: false
+  methods:
+  - name: print
+    return: ""
+    access: private
+    parameters:
+    - name: colour
+      type: string
+      pass: '&'
+      const: true
+      default: ""
+  - name: getSize
+    return: int
+    access: protected
+    static: true
+  - name: getColor
+    return: string
+    access: public
+    const: true
+  parent:
+    name: Fruit
+    access: public
+- name: Seed
+  access: private
+  fields:
+  - name: size
+    type: int
+    access: public
+  methods:
+  - name: transform
+    return: int
+    access: public
+    const: true
+    static: true

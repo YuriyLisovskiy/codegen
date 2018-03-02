@@ -1,62 +1,121 @@
 {
-  "classes": [
-	{
-	  "name": "Apple",
-	  "parent": {
-		"name": "Fruit",
-		"access": "public"
-	  },
-	  "fields": [
+	"name": "main",
+	"classes": [
 		{
-		  "access": "private",
-		  "type": "int",
-		  "name": "value"
+			"name": "Fruit",
+			"fields": null,
+			"methods": null,
+			"constructors": null,
+			"classes": null,
+			"parent": {
+				"name": "",
+				"access": ""
+			},
+			"access": ""
 		},
 		{
-		  "access": "protected",
-		  "type": "char",
-		  "name": "symbol",
-		  "static": true
-		}
-	  ],
-	  "methods": [
-		{
-		  "access": "public",
-		  "return": "int",
-		  "static": true,
-		  "name": "getSymbol",
-		  "const": true
-		}
-	  ]
-	},
-	{
-	  "name": "Orange",
-	  "parent": {
-		"name": "SomeOtherFruit",
-		"access": "public"
-	  },
-	  "fields": [
-		{
-		  "access": "public",
-		  "type": "string",
-		  "name": "val"
+			"name": "Apple",
+			"fields": [
+				{
+					"name": "colour",
+					"type": "string",
+					"const": false,
+					"pointer": false,
+					"default": "\"red\"",
+					"access": "public",
+					"static": false
+				},
+				{
+					"name": "sort",
+					"type": "string",
+					"const": false,
+					"pointer": false,
+					"default": "\"Golden\"",
+					"access": "public",
+					"static": true
+				},
+				{
+					"name": "size",
+					"type": "int",
+					"const": false,
+					"pointer": false,
+					"default": "1",
+					"access": "private",
+					"static": false
+				}
+			],
+			"methods": [
+				{
+					"name": "print",
+					"return": "",
+					"access": "private",
+					"const": false,
+					"static": false,
+					"parameters": [
+						{
+							"name": "colour",
+							"type": "string",
+							"pass": "\u0026",
+							"const": true,
+							"default": ""
+						}
+					]
+				},
+				{
+					"name": "getSize",
+					"return": "int",
+					"access": "protected",
+					"const": false,
+					"static": true,
+					"parameters": null
+				},
+				{
+					"name": "getColor",
+					"return": "string",
+					"access": "public",
+					"const": true,
+					"static": false,
+					"parameters": null
+				}
+			],
+			"constructors": null,
+			"classes": null,
+			"parent": {
+				"name": "Fruit",
+				"access": "public"
+			},
+			"access": ""
 		},
 		{
-		  "access": "public",
-		  "type": "double",
-		  "name": "sym",
-		  "static": false
+			"name": "Seed",
+			"fields": [
+				{
+					"name": "size",
+					"type": "int",
+					"const": false,
+					"pointer": false,
+					"default": "",
+					"access": "public",
+					"static": false
+				}
+			],
+			"methods": [
+				{
+					"name": "transform",
+					"return": "int",
+					"access": "public",
+					"const": true,
+					"static": true,
+					"parameters": null
+				}
+			],
+			"constructors": null,
+			"classes": null,
+			"parent": {
+				"name": "",
+				"access": ""
+			},
+			"access": "private"
 		}
-	  ],
-	  "methods": [
-		{
-		  "access": "public",
-		  "return": "int",
-		  "static": true,
-		  "name": "getSymbol",
-		  "const": true
-		}
-	  ]
-	}
-  ]
+	]
 }

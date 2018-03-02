@@ -1,13 +1,13 @@
 package parser
 
 import (
-	"os"
-	"io"
-	"flag"
 	"errors"
-	"strings"
-	"net/http"
+	"github.com/YuriyLisovskiy/codegen/generators"
+	"io"
 	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
 )
 
 func Read(name string) ([]byte, error) {
@@ -47,15 +47,6 @@ func Download(url string) ([]byte, error) {
 	return result, nil
 }
 
-func GetArgs() (string, string, string, bool) {
-	langPtr := flag.String("l", "", "language")
-	xmlPtr := flag.String("f", "", "file")
-	xmlUrlPtr := flag.String("u", "", "file url")
-	spacesPtr := flag.Bool("s", false, "use spaces")
-	flag.Parse()
-	return *langPtr, *xmlPtr, *xmlUrlPtr, *spacesPtr
-}
-
 func ValidateArgs(lang, file, url string) error {
 	if lang == "" {
 		return errors.New("specify language (-l) flag")
@@ -70,29 +61,18 @@ func ValidateArgs(lang, file, url string) error {
 }
 
 func GetExtension(language string) string {
-	switch language {
-	case "java":
-		return ".java"
-	case "go":
-		return ".go"
-	case "ruby":
-		return ".rb"
-	case "cpp":
-		return ".h"
-	case "python":
-		return ".py"
-	case "js_es6":
-		return ".js"
-	case "cs":
-		return ".cs"
+	language = generators.NormalizeLang(language)
+	ext := generators.Generators[language].Extension
+	if ext != "" {
+		ext = "." + ext
 	}
-	return ""
+	return ext
 }
 
 func GetFileFormat(name string) (string, error) {
 	arr := strings.Split(name, ".")
 	if len(arr) > 0 {
-		return arr[len(arr) - 1], nil
+		return arr[len(arr)-1], nil
 	}
 	return "", errors.New("invalid input file")
 }

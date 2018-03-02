@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 	"strings"
 )
@@ -13,7 +12,7 @@ var (
 
 type RubyGenerator struct{}
 
-func (gen RubyGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen RubyGenerator) Generate(pkg Package) map[string]string {
 	rubyIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -23,7 +22,7 @@ func (gen RubyGenerator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen RubyGenerator) generateClass(class parser.Class) string {
+func (gen RubyGenerator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
 
 	if class.Parent.Name != "" {
@@ -51,7 +50,7 @@ func (gen RubyGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (RubyGenerator) generateField(field parser.Field) string {
+func (RubyGenerator) generateField(field Field) string {
 	result := rubyIndent
 
 	if field.Access == "public" {
@@ -63,11 +62,11 @@ func (RubyGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (gen RubyGenerator) generateMethod(method parser.Method) string {
+func (gen RubyGenerator) generateMethod(method Method) string {
 	return gen.generateMethodWithBody(method, "")
 }
 
-func (RubyGenerator) generateMethodWithBody(method parser.Method, body string) string {
+func (RubyGenerator) generateMethodWithBody(method Method, body string) string {
 	result := "def "
 
 	if method.Access == "private" {
@@ -107,14 +106,14 @@ func (RubyGenerator) generateMethodWithBody(method parser.Method, body string) s
 	return result
 }
 
-func (gen RubyGenerator) generateInit(class parser.Class) string {
+func (gen RubyGenerator) generateInit(class Class) string {
 	result, body := "", ""
-	init := parser.Method{
+	init := Method{
 		Name:       "initialize",
-		Parameters: []parser.Parameter{},
+		Parameters: []Parameter{},
 	}
 	for i, field := range class.Fields {
-		init.Parameters = append(init.Parameters, parser.Parameter{
+		init.Parameters = append(init.Parameters, Parameter{
 			Name:    field.Name,
 			Default: field.Default,
 		})

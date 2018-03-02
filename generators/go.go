@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 	"strings"
 )
@@ -13,7 +12,7 @@ var (
 
 type GoGenerator struct{}
 
-func (gen GoGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen GoGenerator) Generate(pkg Package) map[string]string {
 	goIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -24,7 +23,7 @@ func (gen GoGenerator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen GoGenerator) generateClass(class parser.Class) string {
+func (gen GoGenerator) generateClass(class Class) string {
 	fields, methods, classes := "", "", ""
 
 	for _, field := range class.Fields {
@@ -53,7 +52,7 @@ func (gen GoGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (GoGenerator) generateField(field parser.Field) string {
+func (GoGenerator) generateField(field Field) string {
 	result := goIndent
 
 	if field.Access == "public" {
@@ -65,7 +64,7 @@ func (GoGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (GoGenerator) generateMethod(method parser.Method) string {
+func (GoGenerator) generateMethod(method Method) string {
 	result := ""
 
 	if method.Access == "public" {

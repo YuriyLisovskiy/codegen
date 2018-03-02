@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 	"strings"
 )
@@ -13,7 +12,7 @@ var (
 
 type PythonGenerator struct{}
 
-func (gen PythonGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen PythonGenerator) Generate(pkg Package) map[string]string {
 	pythonIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -23,7 +22,7 @@ func (gen PythonGenerator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen PythonGenerator) generateClass(class parser.Class) string {
+func (gen PythonGenerator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
 
 	if class.Parent.Name != "" {
@@ -55,7 +54,7 @@ func (gen PythonGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (PythonGenerator) generateField(field parser.Field) string {
+func (PythonGenerator) generateField(field Field) string {
 	result := goIndent
 
 	if field.Access == "public" {
@@ -67,11 +66,11 @@ func (PythonGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (gen PythonGenerator) generateMethod(method parser.Method) string {
+func (gen PythonGenerator) generateMethod(method Method) string {
 	return gen.generateMethodWithBody(method, "pass")
 }
 
-func (PythonGenerator) generateMethodWithBody(method parser.Method, body string) string {
+func (PythonGenerator) generateMethodWithBody(method Method, body string) string {
 	result := "def "
 
 	switch method.Access {
@@ -116,14 +115,14 @@ func (PythonGenerator) generateMethodWithBody(method parser.Method, body string)
 	return result
 }
 
-func (gen PythonGenerator) generateInit(class parser.Class) string {
+func (gen PythonGenerator) generateInit(class Class) string {
 	result, body := "", ""
-	init := parser.Method{
+	init := Method{
 		Name:       "__init__",
-		Parameters: []parser.Parameter{},
+		Parameters: []Parameter{},
 	}
 	for _, field := range class.Fields {
-		init.Parameters = append(init.Parameters, parser.Parameter{
+		init.Parameters = append(init.Parameters, Parameter{
 			Name:    field.Name,
 			Default: field.Default,
 		})

@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 )
 
@@ -15,7 +14,7 @@ type CSharpGenerator struct{}
 /*
 The class must be validated before using this function
 */
-func (gen CSharpGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen CSharpGenerator) Generate(pkg Package) map[string]string {
 	cSharpIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -27,9 +26,9 @@ func (gen CSharpGenerator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen CSharpGenerator) generateClass(class parser.Class) string {
+func (gen CSharpGenerator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
-	
+
 	if class.Parent.Name != "" {
 		inherits = ": " + class.Parent.Name + " "
 	}
@@ -62,7 +61,7 @@ func (gen CSharpGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (CSharpGenerator) generateField(field parser.Field) string {
+func (CSharpGenerator) generateField(field Field) string {
 	result := javaIndent
 	if field.Access == "" || field.Access == "default" {
 		result += "private "
@@ -89,7 +88,7 @@ func (CSharpGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (CSharpGenerator) generateMethod(method parser.Method) string {
+func (CSharpGenerator) generateMethod(method Method) string {
 	result := ""
 	if method.Access == "" || method.Access == "default" {
 		result += "private "
@@ -108,7 +107,7 @@ func (CSharpGenerator) generateMethod(method parser.Method) string {
 	default:
 		result += method.Return + " "
 	}
-	
+
 	result += method.Name
 	result += "("
 	for i, parameter := range method.Parameters {
@@ -123,9 +122,9 @@ func (CSharpGenerator) generateMethod(method parser.Method) string {
 			result += ", "
 		}
 	}
-	
+
 	result += ") {"
-	
+
 	if method.Return != "" {
 		switch method.Return {
 		case "string":
@@ -134,8 +133,8 @@ func (CSharpGenerator) generateMethod(method parser.Method) string {
 			result += "\n" + javaIndent + "return new " + method.Return + "();\n"
 		}
 	}
-	
+
 	result += "}"
-	
+
 	return result
 }

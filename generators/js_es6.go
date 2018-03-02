@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 	"strings"
 )
@@ -13,7 +12,7 @@ var (
 
 type ES6Generator struct{}
 
-func (gen ES6Generator) Generate(pkg parser.Package) map[string]string {
+func (gen ES6Generator) Generate(pkg Package) map[string]string {
 	es6Indent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -23,7 +22,7 @@ func (gen ES6Generator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen ES6Generator) generateClass(class parser.Class) string {
+func (gen ES6Generator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
 
 	if class.Parent.Name != "" {
@@ -64,7 +63,7 @@ func (gen ES6Generator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (ES6Generator) generateField(field parser.Field) string {
+func (ES6Generator) generateField(field Field) string {
 	result := es6Indent
 
 	if field.Access == "public" {
@@ -76,11 +75,11 @@ func (ES6Generator) generateField(field parser.Field) string {
 	return result
 }
 
-func (gen ES6Generator) generateMethod(method parser.Method) string {
+func (gen ES6Generator) generateMethod(method Method) string {
 	return gen.generateMethodWithBody(method, "")
 }
 
-func (ES6Generator) generateMethodWithBody(method parser.Method, body string) string {
+func (ES6Generator) generateMethodWithBody(method Method, body string) string {
 	result := ""
 
 	//if method.Access == "private" {
@@ -120,11 +119,11 @@ func (ES6Generator) generateMethodWithBody(method parser.Method, body string) st
 	return result
 }
 
-func (gen ES6Generator) generateInit(class parser.Class) string {
+func (gen ES6Generator) generateInit(class Class) string {
 	result, body := "", ""
-	init := parser.Method{
+	init := Method{
 		Name:       "constructor",
-		Parameters: []parser.Parameter{},
+		Parameters: []Parameter{},
 	}
 	previousIsStatic := false
 	for i, field := range class.Fields {
@@ -132,7 +131,7 @@ func (gen ES6Generator) generateInit(class parser.Class) string {
 			previousIsStatic = true
 			continue
 		}
-		init.Parameters = append(init.Parameters, parser.Parameter{
+		init.Parameters = append(init.Parameters, Parameter{
 			Name:    field.Name,
 			Default: field.Default,
 		})

@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 	"strings"
 )
@@ -13,7 +12,7 @@ var (
 
 type CppGenerator struct{}
 
-func (gen CppGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen CppGenerator) Generate(pkg Package) map[string]string {
 	cppIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -24,14 +23,14 @@ func (gen CppGenerator) Generate(pkg parser.Package) map[string]string {
 		code += "using namespace std;\n\n"
 		code += gen.generateClass(class) + "\n"
 		code += "\n// Definition\n\n"
-	//	code += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
+		//	code += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
 		code += generateSourceFile(class, class.Name)
 		result[class.Name] = code
 	}
 	return result
 }
 
-func (gen CppGenerator) generateClass(class parser.Class) string {
+func (gen CppGenerator) generateClass(class Class) string {
 	parent, public, protected, private := "", "", "", ""
 	if class.Parent.Name != "" {
 		parent = " : " + class.Parent.Access + " " + class.Parent.Name
@@ -50,7 +49,7 @@ func (gen CppGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (CppGenerator) generateField(field parser.Field) string {
+func (CppGenerator) generateField(field Field) string {
 	result := cppIndent
 	if field.Static {
 		result += "static "
@@ -67,7 +66,7 @@ func (CppGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (CppGenerator) generateMethod(method parser.Method) string {
+func (CppGenerator) generateMethod(method Method) string {
 	result := ""
 	if method.Static {
 		result += "static "
@@ -93,7 +92,7 @@ func (CppGenerator) generateMethod(method parser.Method) string {
 	return result
 }
 
-func (gen CppGenerator) generateSection(access string, class parser.Class) string {
+func (gen CppGenerator) generateSection(access string, class Class) string {
 	result := ""
 	for _, field := range class.Fields {
 		if access == strings.ToLower(field.Access) {
@@ -142,7 +141,7 @@ func getReturnVal(returnType string) string {
 	return " " + result
 }
 
-func generateSourceFile(class parser.Class, access string) string {
+func generateSourceFile(class Class, access string) string {
 	result := ""
 	for _, method := range class.Methods {
 		switch method.Return {
@@ -168,7 +167,7 @@ func generateSourceFile(class parser.Class, access string) string {
 		result += "\n}\n"
 	}
 	for _, cl := range class.Classes {
-		result += generateSourceFile(cl, class.Name + "::" + cl.Name)
+		result += generateSourceFile(cl, class.Name+"::"+cl.Name)
 	}
 	return result
 }

@@ -1,7 +1,6 @@
 package generators
 
 import (
-	"../parser"
 	"fmt"
 )
 
@@ -15,7 +14,7 @@ type JavaGenerator struct{}
 /*
 The class must be validated before using this function
 */
-func (gen JavaGenerator) Generate(pkg parser.Package) map[string]string {
+func (gen JavaGenerator) Generate(pkg Package) map[string]string {
 	javaIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
@@ -25,7 +24,7 @@ func (gen JavaGenerator) Generate(pkg parser.Package) map[string]string {
 	return result
 }
 
-func (gen JavaGenerator) generateClass(class parser.Class) string {
+func (gen JavaGenerator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
 
 	if class.Parent.Name != "" {
@@ -62,7 +61,7 @@ func (gen JavaGenerator) generateClass(class parser.Class) string {
 	return result
 }
 
-func (JavaGenerator) generateField(field parser.Field) string {
+func (JavaGenerator) generateField(field Field) string {
 	result := javaIndent
 	if field.Access == "" || field.Access == "default" {
 		result += "private "
@@ -91,7 +90,7 @@ func (JavaGenerator) generateField(field parser.Field) string {
 	return result
 }
 
-func (JavaGenerator) generateMethod(method parser.Method) string {
+func (JavaGenerator) generateMethod(method Method) string {
 	result := ""
 	if method.Access == "" || method.Access == "default" {
 		result += "private "
