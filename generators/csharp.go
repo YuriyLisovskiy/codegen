@@ -2,6 +2,7 @@ package generators
 
 import (
 	"fmt"
+	"strings"
 )
 
 var (
@@ -18,10 +19,7 @@ func (gen CSharpGenerator) Generate(pkg Package) map[string]string {
 	cSharpIndent = getIndent(!pkg.UseSpaces, 4)
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
-		code := "namespace " + class.Name + "Application {\n"
-		code += shiftCode(gen.generateClass(class), 1, cSharpIndent)
-		code += "\n}\n"
-		result[class.Name] = code
+		result[class.Name] = gen.generateClass(class)
 	}
 	return result
 }
@@ -39,16 +37,20 @@ func (gen CSharpGenerator) generateClass(class Class) string {
 		fields = "\n" + fields
 	}
 	for _, method := range class.Methods {
-		methods += shiftCode(gen.generateMethod(method), 1, cSharpIndent) + "\n\n"
+		methods += "\n" + shiftCode(gen.generateMethod(method), 1, cSharpIndent) + "\n"
 	}
-	if methods != "" {
-		methods = "\n" + methods
+	if len(class.Fields) > 0 {
+		methods += shiftCode(gen.generateGetSet(class.Fields), 1, cSharpIndent)
 	}
 	for _, innerClass := range class.Classes {
-		classes += shiftCode(gen.generateClass(innerClass), 1, cSharpIndent)
+		classes += "\n" + shiftCode(gen.generateClass(innerClass), 1, cSharpIndent) + "\n"
 	}
 	if classes != "" {
-		classes = classes + "\n"
+		classes += "\n"
+	} else if methods != "" {
+		methods += "\n"
+	} else if fields != "" {
+		fields += "\n"
 	}
 	result := fmt.Sprintf(
 		cSharpClassFormat,
@@ -139,6 +141,18 @@ func (CSharpGenerator) generateMethod(method Method) string {
 	return result
 }
 
-func (CSharpGenerator) generateGetSet(field []Field) string {
-	return ""
+func (gen CSharpGenerator) generateGetSet(fields []Field) string {
+	result := ""
+	for _, field := range fields {
+		if field.Getter {
+			result += "\npublic " + field.Type + " get" + strings.Title(field.Name) + "() {\n" +
+				cSharpIndent + "return " + field.Name + ";\n}\n"
+		}
+		if field.Setter {
+			result += "\npublic void set" + strings.Title(field.Name) + "(" + field.Type + " new" +
+				strings.Title(field.Name) + ") {\n" + cSharpIndent + field.Name + " = new" +
+					strings.Title(field.Name) + ";\n}\n"
+		}
+	}
+	return result
 }

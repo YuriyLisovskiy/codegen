@@ -24,7 +24,7 @@ func (gen CppGenerator) Generate(pkg Package) map[string]string {
 		code += gen.generateClass(class) + "\n"
 		code += "\n// Definition\n\n"
 		//	code += "#include \"" + class.Name + ".h\"\n\nusing namespace std;\n\n"
-		code += generateSourceFile(class, class.Name)
+		code += gen.generateSourceFile(class, class.Name)
 		result[class.Name] = code
 	}
 	return result
@@ -108,14 +108,14 @@ func (CppGenerator) generateMethod(method Method) string {
 	return result
 }
 
-func (CppGenerator) generateGetSet(fields []Field) string {
+func (gen CppGenerator) generateGetSet(fields []Field) string {
 	result := ""
 	for _, field := range fields {
 		if field.Getter {
-			result += cppIndent + generateGet(field, "") + "\n"
+			result += cppIndent + gen.generateGet(field, "") + "\n"
 		}
 		if field.Setter {
-			result += cppIndent + generateSet(field, "") + "\n"
+			result += cppIndent + gen.generateSet(field, "") + "\n"
 		}
 	}
 	return result
@@ -132,7 +132,7 @@ func (gen CppGenerator) generateSection(access string, class Class) string {
 		result += "\n"
 	}
 	if  access == "public" && len(class.Fields) > 0 {
-		result += shiftCode(generateConstructors(class, ""), 1, cppIndent) + "\n"
+		result += shiftCode(gen.generateInit(class, ""), 1, cppIndent) + "\n"
 	}
 	for _, method := range class.Methods {
 		if access == strings.ToLower(method.Access) {
@@ -150,7 +150,7 @@ func (gen CppGenerator) generateSection(access string, class Class) string {
 	return result
 }
 
-func getReturnVal(returnType string) string {
+func (CppGenerator) getReturnVal(returnType string) string {
 	result := ""
 	if strings.Contains(returnType, "*") {
 		result = "nullptr"
@@ -173,8 +173,8 @@ func getReturnVal(returnType string) string {
 	return " " + result
 }
 
-func generateSourceFile(class Class, access string) string {
-	result := generateConstructors(class, access)
+func (gen CppGenerator) generateSourceFile(class Class, access string) string {
+	result := gen.generateInit(class, access)
 	if result != "" {
 		result = "\n" + result + "\n"
 	}
@@ -198,25 +198,25 @@ func generateSourceFile(class Class, access string) string {
 		}
 		result += ")\n{\n"
 		if method.Return != "" {
-			result += cppIndent + "return" + getReturnVal(method.Return) + ";"
+			result += cppIndent + "return" + gen.getReturnVal(method.Return) + ";"
 		}
 		result += "\n}\n"
 	}
 	for _, field := range class.Fields {
 		if field.Getter {
-			result += "\n" + generateGet(field, access) + "\n"
+			result += "\n" + gen.generateGet(field, access) + "\n"
 		}
 		if field.Setter {
-			result += "\n" + generateSet(field, access) + "\n"
+			result += "\n" + gen.generateSet(field, access) + "\n"
 		}
 	}
 	for _, cl := range class.Classes {
-		result += "\n" + generateSourceFile(cl, class.Name+"::"+cl.Name) + "\n"
+		result += "\n" + gen.generateSourceFile(cl, class.Name+"::"+cl.Name) + "\n"
 	}
 	return result
 }
 
-func generateGet(field Field, access string) string {
+func (CppGenerator) generateGet(field Field, access string) string {
 	result := ""
 	if access != "" {
 		result = field.Type + " " + access + "::get" + strings.Title(field.Name) + "()\n{\n" +
@@ -227,7 +227,7 @@ func generateGet(field Field, access string) string {
 	return result
 }
 
-func generateSet(field Field, access string) string {
+func (CppGenerator) generateSet(field Field, access string) string {
 	result := ""
 	if access != "" {
 		result = "void " + access + "::set" + strings.Title(field.Name) + "(" + field.Type +
@@ -238,7 +238,7 @@ func generateSet(field Field, access string) string {
 	return result
 }
 
-func generateConstructors(class Class, access string) string {
+func (CppGenerator) generateInit(class Class, access string) string {
 	params := ""
 	for i, field := range class.Fields {
 		params += field.Type + " " + field.Name
