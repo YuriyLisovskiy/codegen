@@ -8,6 +8,7 @@ import (
 var (
 	goClassFormat = "type %s struct {%s}%s%s"
 	goIndent      = getIndent(true, 4)
+	className	  = ""
 )
 
 type GoGenerator struct{}
@@ -17,6 +18,7 @@ func (gen GoGenerator) Generate(pkg Package) map[string]string {
 	result := make(map[string]string)
 	for _, class := range pkg.Classes {
 		code := "package " + class.Name + "\n\n"
+		className = class.Name
 		code += gen.generateClass(class)
 		result[class.Name] = code
 	}
@@ -38,6 +40,7 @@ func (gen GoGenerator) generateClass(class Class) string {
 	if methods != "" {
 		methods = "\n\n" + methods
 	}
+	methods += gen.generateGetSet(class.Fields)
 	for _, innerClass := range class.Classes {
 		classes += gen.generateClass(innerClass)
 	}
@@ -98,6 +101,18 @@ func (GoGenerator) generateMethod(method Method) string {
 	return result
 }
 
-func (GoGenerator) generateGetSet(field []Field) string {
-	return ""
+func (GoGenerator) generateGetSet(fields []Field) string {
+	result := ""
+	for _, field := range fields {
+		if field.Getter {
+			result += "func (" + className + ") Get" + strings.Title(field.Name) + "() " + field.Type +
+				" {\n" + goIndent + "return " + field.Name + "\n}\n\n"
+		}
+		if field.Setter {
+			result += "func (" + className + ") Set" + strings.Title(field.Name) + "(new" + strings.Title(field.Name) +
+				" " + field.Type + ") {\n" + goIndent + field.Name + " = " + "new" + strings.Title(field.Name) +
+					"\n}\n\n"
+		}
+	}
+	return result
 }

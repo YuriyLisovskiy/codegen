@@ -2,6 +2,7 @@ package generators
 
 import (
 	"fmt"
+	"strings"
 )
 
 var (
@@ -26,11 +27,9 @@ func (gen JavaGenerator) Generate(pkg Package) map[string]string {
 
 func (gen JavaGenerator) generateClass(class Class) string {
 	fields, inherits, methods, classes := "", "", "", ""
-
 	if class.Parent.Name != "" {
 		inherits = "extends " + class.Parent.Name + " "
 	}
-
 	for _, field := range class.Fields {
 		fields += gen.generateField(field) + "\n"
 	}
@@ -38,18 +37,21 @@ func (gen JavaGenerator) generateClass(class Class) string {
 		fields = "\n" + fields
 	}
 	for _, method := range class.Methods {
-		methods += shiftCode(gen.generateMethod(method), 1, javaIndent) + "\n\n"
+		methods += "\n" + shiftCode(gen.generateMethod(method), 1, javaIndent) + "\n"
 	}
-	if methods != "" {
-		methods = "\n" + methods
+	if len(class.Fields) > 0 {
+		methods += shiftCode(gen.generateGetSet(class.Fields), 1, javaIndent)
 	}
 	for _, innerClass := range class.Classes {
-		classes += shiftCode(gen.generateClass(innerClass), 1, javaIndent)
+		classes += "\n" + shiftCode(gen.generateClass(innerClass), 1, javaIndent) + "\n"
 	}
 	if classes != "" {
-		classes = classes + "\n"
+		classes += "\n"
+	} else if methods != "" {
+		methods += "\n"
+	} else if fields != "" {
+		fields += "\n"
 	}
-
 	result := fmt.Sprintf(
 		javaClassFormat,
 		class.Name,
@@ -137,6 +139,18 @@ func (JavaGenerator) generateMethod(method Method) string {
 	return result
 }
 
-func (JavaGenerator) generateGetSet(field []Field) string {
-	return ""
+func (JavaGenerator) generateGetSet(fields []Field) string {
+	result := ""
+	for _, field := range fields {
+		if field.Getter {
+			result += "\npublic " + field.Type + " get" + strings.Title(field.Name) + "() {\n" +
+				cSharpIndent + "return " + field.Name + ";\n}\n"
+		}
+		if field.Setter {
+			result += "\npublic void set" + strings.Title(field.Name) + "(" + field.Type + " new" +
+				strings.Title(field.Name) + ") {\n" + cSharpIndent + field.Name + " = new" +
+				strings.Title(field.Name) + ";\n}\n"
+		}
+	}
+	return result
 }
