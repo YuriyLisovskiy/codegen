@@ -9,6 +9,8 @@ type (
 		Default string `xml:"default" json:"default" yml:"default"`
 		Access  string `xml:"access" json:"access" yml:"access"`
 		Static  bool   `xml:"static" json:"static" yml:"static"`
+		Getter  bool   `xml:"getter" json:"getter" yml:"getter"`
+		Setter  bool   `xml:"setter" json:"setter" yml:"setter"`
 	}
 
 	Parameter struct {

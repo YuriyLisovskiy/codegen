@@ -136,3 +136,7 @@ func (JavaGenerator) generateMethod(method Method) string {
 
 	return result
 }
+
+func (JavaGenerator) generateGetSet(field []Field) string {
+	return ""
+}

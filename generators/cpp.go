@@ -36,8 +36,24 @@ func (gen CppGenerator) generateClass(class Class) string {
 		parent = " : " + class.Parent.Access + " " + class.Parent.Name
 	}
 	public = gen.generateSection("public", class)
+	if public != "" {
+		public = "\n" + public
+	}
+	getSet := gen.generateGetSet(class.Fields)
+	if getSet != "" {
+		if public == "" {
+			public += "\npublic:\n"
+		}
+		public += getSet
+	}
 	protected = gen.generateSection("protected", class)
+	if protected != "" {
+		protected = "\n" + protected
+	}
 	private = gen.generateSection("private", class)
+	if private != "" {
+		private = "\n" + private
+	}
 	result := fmt.Sprintf(
 		cppClassFormat,
 		class.Name,
@@ -92,6 +108,19 @@ func (CppGenerator) generateMethod(method Method) string {
 	return result
 }
 
+func (CppGenerator) generateGetSet(fields []Field) string {
+	result := ""
+	for _, field := range fields {
+		if field.Getter {
+			result += cppIndent + generateGet(field, "") + "\n"
+		}
+		if field.Setter {
+			result += cppIndent + generateSet(field, "") + "\n"
+		}
+	}
+	return result
+}
+
 func (gen CppGenerator) generateSection(access string, class Class) string {
 	result := ""
 	for _, field := range class.Fields {
@@ -99,9 +128,12 @@ func (gen CppGenerator) generateSection(access string, class Class) string {
 			result += gen.generateField(field) + "\n"
 		}
 	}
-
-	// TODO: generate constructors
-
+	if result != "" {
+		result += "\n"
+	}
+	if  access == "public" && len(class.Fields) > 0 {
+		result += shiftCode(generateConstructors(class, ""), 1, cppIndent) + "\n"
+	}
 	for _, method := range class.Methods {
 		if access == strings.ToLower(method.Access) {
 			result += shiftCode(gen.generateMethod(method), 1, cppIndent) + "\n"
@@ -113,7 +145,7 @@ func (gen CppGenerator) generateSection(access string, class Class) string {
 		}
 	}
 	if result != "" {
-		result = "\n" + access + ":\n" + result
+		result = access + ":\n" + result
 	}
 	return result
 }
@@ -142,8 +174,12 @@ func getReturnVal(returnType string) string {
 }
 
 func generateSourceFile(class Class, access string) string {
-	result := ""
+	result := generateConstructors(class, access)
+	if result != "" {
+		result = "\n" + result + "\n"
+	}
 	for _, method := range class.Methods {
+		result += "\n"
 		switch method.Return {
 		case "":
 			result += "void "
@@ -166,8 +202,64 @@ func generateSourceFile(class Class, access string) string {
 		}
 		result += "\n}\n"
 	}
+	for _, field := range class.Fields {
+		if field.Getter {
+			result += "\n" + generateGet(field, access) + "\n"
+		}
+		if field.Setter {
+			result += "\n" + generateSet(field, access) + "\n"
+		}
+	}
 	for _, cl := range class.Classes {
-		result += generateSourceFile(cl, class.Name+"::"+cl.Name)
+		result += "\n" + generateSourceFile(cl, class.Name+"::"+cl.Name) + "\n"
+	}
+	return result
+}
+
+func generateGet(field Field, access string) string {
+	result := ""
+	if access != "" {
+		result = field.Type + " " + access + "::get" + strings.Title(field.Name) + "()\n{\n" +
+			cppIndent + "return " + field.Name + ";\n}"
+	} else {
+		result = field.Type + " get" + strings.Title(field.Name) + "();"
+	}
+	return result
+}
+
+func generateSet(field Field, access string) string {
+	result := ""
+	if access != "" {
+		result = "void " + access + "::set" + strings.Title(field.Name) + "(" + field.Type +
+			" newValue)\n{\n" + cppIndent + "this->" + field.Name + " = newValue;\n}"
+	} else {
+		result = "void set" + strings.Title(field.Name) + "(" + field.Type + " newValue);"
+	}
+	return result
+}
+
+func generateConstructors(class Class, access string) string {
+	params := ""
+	for i, field := range class.Fields {
+		params += field.Type + " " + field.Name
+		if i+1 < len(class.Fields) {
+			params += ", "
+		}
+	}
+	result := ""
+	if access != "" {
+		if params != "" {
+			result += "\n" + access + "::" + class.Name + "(" + params + ")\n{\n"
+			for _, field := range class.Fields {
+				result += cppIndent + "this->" + field.Name + " = " + field.Name + ";\n"
+			}
+			result += "}"
+		}
+	} else {
+		result = class.Name + "() = default;"
+		if params != "" {
+			result += "\n" + class.Name + "(" + params + ");"
+		}
 	}
 	return result
 }

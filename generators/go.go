@@ -97,3 +97,7 @@ func (GoGenerator) generateMethod(method Method) string {
 
 	return result
 }
+
+func (GoGenerator) generateGetSet(field []Field) string {
+	return ""
+}

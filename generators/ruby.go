@@ -126,3 +126,7 @@ func (gen RubyGenerator) generateInit(class Class) string {
 
 	return result
 }
+
+func (RubyGenerator) generateGetSet(field []Field) string {
+	return ""
+}

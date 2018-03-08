@@ -34,11 +34,14 @@ func (gen YamlGenerator) Generate(pkg Package) map[string]string {
 func (gen XmlGenerator) generateField(field Field) string    { return "" }
 func (gen XmlGenerator) generateMethod(method Method) string { return "" }
 func (gen XmlGenerator) generateClass(class Class) string    { return "" }
+func (XmlGenerator) generateGetSet(fields []Field) string { return "" }
 
 func (gen JsonGenerator) generateField(field Field) string    { return "" }
 func (gen JsonGenerator) generateMethod(method Method) string { return "" }
 func (gen JsonGenerator) generateClass(class Class) string    { return "" }
+func (JsonGenerator) generateGetSet(fields []Field) string { return "" }
 
 func (gen YamlGenerator) generateField(field Field) string    { return "" }
 func (gen YamlGenerator) generateMethod(method Method) string { return "" }
 func (gen YamlGenerator) generateClass(class Class) string    { return "" }
+func (YamlGenerator) generateGetSet(fields []Field) string { return "" }

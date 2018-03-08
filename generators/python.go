@@ -132,3 +132,7 @@ func (gen PythonGenerator) generateInit(class Class) string {
 
 	return result
 }
+
+func (PythonGenerator) generateGetSet(field []Field) string {
+	return ""
+}

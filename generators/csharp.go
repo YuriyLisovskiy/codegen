@@ -138,3 +138,7 @@ func (CSharpGenerator) generateMethod(method Method) string {
 
 	return result
 }
+
+func (CSharpGenerator) generateGetSet(field []Field) string {
+	return ""
+}

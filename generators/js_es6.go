@@ -152,3 +152,7 @@ func (gen ES6Generator) generateInit(class Class) string {
 
 	return result
 }
+
+func (ES6Generator) generateGetSet(field []Field) string {
+	return ""
+}

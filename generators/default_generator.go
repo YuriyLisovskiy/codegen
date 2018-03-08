@@ -10,6 +10,7 @@ type Generator interface {
 	generateField(field Field) string
 	generateMethod(method Method) string
 	generateClass(class Class) string
+	generateGetSet(fields []Field) string
 }
 
 type Language struct {
@@ -38,6 +39,7 @@ var (
 						Type:    "string",
 						Name:    "colour",
 						Default: `"red"`,
+						Setter:	 true,
 					},
 					{
 						Access:  "public",
@@ -45,12 +47,14 @@ var (
 						Static:  true,
 						Name:    "sort",
 						Default: `"Golden"`,
+						Setter:	 true,
 					},
 					{
 						Access:  "private",
 						Type:    "int",
 						Name:    "size",
 						Default: "1",
+						Setter:	 true,
 					},
 				},
 				Methods: []Method{
@@ -73,7 +77,7 @@ var (
 						Name:   "getSize",
 					},
 					{
-						Access: "public",
+						Access: "protected",
 						Return: "string",
 						Name:   "getColor",
 						Const:  true,
